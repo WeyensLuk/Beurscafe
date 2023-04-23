@@ -1,0 +1,19 @@
+<div class="col-auto self-align-center">
+  <span class="label">{{ drink.name }}</span>
+  <p-inputNumber
+    [(ngModel)]="drink.amountPurchased"
+    [showButtons]="true"
+    buttonLayout="horizontal"
+    inputId="horizontal"
+    spinnerMode="horizontal"
+    [step]="1"
+    decrementButtonClass="p-button-danger"
+    incrementButtonClass="p-button-success"
+    incrementButtonIcon="pi pi-plus"
+    decrementButtonIcon="pi pi-minus"
+    [min]="0"
+    [allowEmpty]="false"
+    class="small"
+    (onInput)="putNewAmountPurchased()"
+  ></p-inputNumber>
+</div>

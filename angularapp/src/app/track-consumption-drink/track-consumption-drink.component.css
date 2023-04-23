@@ -1,0 +1,24 @@
+@media only screen and (max-width: 768px) {
+  .label {
+    width: 15vw;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .label {
+    width: 5vw;
+  }
+}
+
+.label {
+  font-size: 1.5em;
+  color: white;
+  display: inline-block;
+  margin-right: 1em;
+}
+
+:host ::ng-deep {
+  .small input {
+    width: 3em;
+  }
+}

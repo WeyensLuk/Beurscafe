@@ -1,0 +1,9 @@
+<div class="main">
+  <div class="container" *ngFor="let drink of drinks">
+    <div class="row">
+      <app-track-consumption-drink
+        [drink]="drink"
+      ></app-track-consumption-drink>
+    </div>
+  </div>
+</div>

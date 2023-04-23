@@ -1,0 +1,23 @@
+@media only screen and (max-width: 768px) {
+  .bar {
+    font-size: 1.25em;
+    width: auto !important;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .bar {
+    font-size: 1.875em;
+  }
+}
+
+.bar {
+  border-radius:25px;
+  padding-left: 25px;
+  margin-bottom: 0.5em;
+}
+
+.drinkname {
+  width: 8em;
+  display: inline-block;
+}

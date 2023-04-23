@@ -1,0 +1,17 @@
+<div
+  class="container bar"
+  [style.backgroundColor]="calculateBackgroundColor()"
+  [style.width]="calculateWidth()"
+>
+  <div class="row">
+    <div class="col-auto me-auto">
+      {{ drink.name }}
+    </div>
+    <div class="col-auto me-auto">
+      {{ drink.currentPrice | currency : "EUR" }}
+    </div>
+    <div class="col-auto">
+      {{ calculatePriceDifference() | priceDifference }}
+    </div>
+  </div>
+</div>
