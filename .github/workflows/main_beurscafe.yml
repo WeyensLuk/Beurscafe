@@ -3,6 +3,10 @@
 
 name: Build and deploy Node.js app to Azure Web App - beurscafe
 
+defaults:
+  run:
+    working-directory: angularapp
+
 on:
   push:
     branches:
