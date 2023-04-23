@@ -1,3 +1,3 @@
 export const environment = {
-  baseURL:""
+  baseURL:"https://beurscafeapi.azurewebsites.net"
 };
