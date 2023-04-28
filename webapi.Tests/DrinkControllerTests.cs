@@ -1,4 +1,5 @@
-﻿using webapi.Controllers;
+﻿using LiteDB;
+using webapi.Controllers;
 using webapi.Models;
 using webapi.Repositories;
 
@@ -6,7 +7,10 @@ namespace webapi.Tests;
 
 public class DrinkControllerTests
 {
+    private Drink _Cava = new Drink { Name = "Cava", OriginalPrice = 4.5m, CurrentPrice = 4.5m, Id = ObjectId.NewObjectId() };
     private DrinkController _DrinkController;
+    private Drink _Duvel = new Drink { Name = "Duvel", OriginalPrice = 3.5m, CurrentPrice = 3.5m, Id = ObjectId.NewObjectId() };
+    private Drink _WitteWijn = new Drink { Name = "Witte wijn", OriginalPrice = 3m, CurrentPrice = 3m, Id = ObjectId.NewObjectId() };
 
     [Test]
     public void Add_AddsDrink()
@@ -26,11 +30,25 @@ public class DrinkControllerTests
     }
 
     [Test]
+    public void ChangeAmountBought_DoesNotDropPricesOfOtherDrinksBelowTenCents()
+    {
+        AddDrinks();
+
+        _Cava.AmountPurchased = 60;
+        _DrinkController.SetTotalAmountPurchased(_Cava);
+        var drinks = _DrinkController.GetAllDrinks().ToList();
+        Assert.That(drinks.Single(d => d.Name == "Cava").CurrentPrice, Is.EqualTo(10.5m));
+        Assert.That(drinks.Single(d => d.Name == "Duvel").CurrentPrice, Is.EqualTo(0.5m));
+        Assert.That(drinks.Single(d => d.Name == "Witte wijn").CurrentPrice, Is.EqualTo(.1m));
+    }
+
+    [Test]
     public void ChangeAmountBought_RaisesAmountBoughtProperty()
     {
         AddDrinks();
 
-        _DrinkController.SetTotalAmountPurchased("Cava", 1);
+        _Cava.AmountPurchased = 1;
+        _DrinkController.SetTotalAmountPurchased(_Cava);
         var drinks = _DrinkController.GetAllDrinks().ToList();
         Assert.That(drinks.Single(d => d.Name == "Cava").AmountPurchased, Is.EqualTo(1));
     }
@@ -40,7 +58,8 @@ public class DrinkControllerTests
     {
         AddDrinks();
 
-        _DrinkController.SetTotalAmountPurchased("Cava", 1);
+        _Cava.AmountPurchased = 1;
+        _DrinkController.SetTotalAmountPurchased(_Cava);
         var drinks = _DrinkController.GetAllDrinks().ToList();
         var cava = drinks.Single(d => d.Name == "Cava");
         Assert.That(cava.CurrentPrice, Is.EqualTo(4.6m));
@@ -51,7 +70,8 @@ public class DrinkControllerTests
     {
         AddDrinks();
 
-        _DrinkController.SetTotalAmountPurchased("Cava", 1);
+        _Cava.AmountPurchased = 1;
+        _DrinkController.SetTotalAmountPurchased(_Cava);
         var drinks = _DrinkController.GetAllDrinks().ToList();
         Assert.That(drinks.Single(d => d.Name == "Duvel").CurrentPrice, Is.EqualTo(3.45m));
         Assert.That(drinks.Single(d => d.Name == "Witte wijn").CurrentPrice, Is.EqualTo(2.95m));
@@ -62,9 +82,12 @@ public class DrinkControllerTests
     {
         AddDrinks();
 
-        _DrinkController.SetTotalAmountPurchased("Cava", 1);
-        _DrinkController.SetTotalAmountPurchased("Duvel", 1);
-        _DrinkController.SetTotalAmountPurchased("Cava", 2);
+        _Cava.AmountPurchased = 1;
+        _DrinkController.SetTotalAmountPurchased(_Cava);
+        _Duvel.AmountPurchased = 1;
+        _DrinkController.SetTotalAmountPurchased(_Duvel);
+        _Cava.AmountPurchased = 2;
+        _DrinkController.SetTotalAmountPurchased(_Cava);
         var drinks = _DrinkController.GetAllDrinks().ToList();
         Assert.That(drinks.Single(d => d.Name == "Cava").CurrentPrice, Is.EqualTo(4.65m));
         Assert.That(drinks.Single(d => d.Name == "Duvel").CurrentPrice, Is.EqualTo(3.5m));
@@ -87,18 +110,13 @@ public class DrinkControllerTests
     public void SetUp()
     {
         _DrinkController = DependencyContainer.Resolve<DrinkController>();
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        DependencyContainer.Resolve<IDrinkRepository>().UpdateAll(new List<Drink>());
+        DependencyContainer.Resolve<IDrinkRepository>().DeleteAll();
     }
 
     private void AddDrinks()
     {
-        _DrinkController.Add(new Drink { Name = "Cava", OriginalPrice = 4.5m });
-        _DrinkController.Add(new Drink { Name = "Duvel", OriginalPrice = 3.5m });
-        _DrinkController.Add(new Drink { Name = "Witte wijn", OriginalPrice = 3m });
+        _DrinkController.Add(_Cava);
+        _DrinkController.Add(_Duvel);
+        _DrinkController.Add(_WitteWijn);
     }
 }

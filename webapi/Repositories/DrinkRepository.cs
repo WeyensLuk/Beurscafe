@@ -11,13 +11,18 @@ public class DrinkRepository : IDrinkRepository
     public DrinkRepository()
     {
         _DB = new LiteDatabase("Drinks.db");
-        _Collection = (LiteCollection<Drink>?)_DB.GetCollection<Drink>("drinks");
+        _Collection = (LiteCollection<Drink>)_DB.GetCollection<Drink>("drinks");
     }
 
     public void Add(Drink drink)
     {
         if (_Collection.Exists(d => d.Name == drink.Name)) throw new InvalidOperationException();
         _Collection.Insert(drink);
+    }
+
+    public void DeleteAll()
+    {
+        _Collection.DeleteAll();
     }
 
     public IList<Drink> GetAllDrinks()

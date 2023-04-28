@@ -9,4 +9,5 @@ public interface IDrinkRepository
     IList<Drink> GetAllDrinks();
 
     void UpdateAll(IList<Drink> drinks);
+    void DeleteAll();
 }

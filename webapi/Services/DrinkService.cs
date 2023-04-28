@@ -24,6 +24,7 @@ public class DrinkService : IDrinkService
         {
             drink.CurrentPrice = drink.OriginalPrice + changeAmount * drink.AmountPurchased
                                  - changeAmount / (drinks.Count - 1) * (drinks.Sum(d => d.AmountPurchased) - drink.AmountPurchased);
+            if (drink.CurrentPrice < 0.1m) drink.CurrentPrice = 0.1m;
         }
 
         _DrinkRepository.UpdateAll(drinks);
