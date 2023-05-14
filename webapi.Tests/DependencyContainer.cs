@@ -10,7 +10,7 @@ public static class DependencyContainer
 {
     private static readonly Dictionary<string, string> Configuration = new()
     {
-        {"Parameters:DrinkChangeAmount", "0.10"}
+        {"Parameters:DrinkChangeAmount", "0.20"}
     };
 
     private static readonly ServiceProvider Provider;

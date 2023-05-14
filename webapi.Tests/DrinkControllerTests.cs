@@ -7,10 +7,10 @@ namespace webapi.Tests;
 
 public class DrinkControllerTests
 {
-    private Drink _Cava = new Drink { Name = "Cava", OriginalPrice = 4.5m, CurrentPrice = 4.5m, Id = ObjectId.NewObjectId() };
+    private Drink _Cava = new Drink { Name = "Cava", OriginalPrice = 4.5m, CurrentPrice = 4.5m, MinimumPrice = 1, Id = ObjectId.NewObjectId() };
     private DrinkController _DrinkController;
-    private Drink _Duvel = new Drink { Name = "Duvel", OriginalPrice = 3.5m, CurrentPrice = 3.5m, Id = ObjectId.NewObjectId() };
-    private Drink _WitteWijn = new Drink { Name = "Witte wijn", OriginalPrice = 3m, CurrentPrice = 3m, Id = ObjectId.NewObjectId() };
+    private Drink _Duvel = new Drink { Name = "Duvel", OriginalPrice = 3.5m, CurrentPrice = 3.5m, MinimumPrice = 0.5m, Id = ObjectId.NewObjectId() };
+    private Drink _WitteWijn = new Drink { Name = "Witte wijn", OriginalPrice = 3m, CurrentPrice = 3m, MinimumPrice = 0.5m, Id = ObjectId.NewObjectId() };
 
     [Test]
     public void Add_AddsDrink()
@@ -30,16 +30,16 @@ public class DrinkControllerTests
     }
 
     [Test]
-    public void ChangeAmountBought_DoesNotDropPricesOfOtherDrinksBelowTenCents()
+    public void ChangeAmountBought_DoesNotDropPricesOfOtherDrinksBelowMinimumPrice()
     {
         AddDrinks();
 
         _Cava.AmountPurchased = 60;
         _DrinkController.SetTotalAmountPurchased(_Cava);
         var drinks = _DrinkController.GetAllDrinks().ToList();
-        Assert.That(drinks.Single(d => d.Name == "Cava").CurrentPrice, Is.EqualTo(10.5m));
-        Assert.That(drinks.Single(d => d.Name == "Duvel").CurrentPrice, Is.EqualTo(0.5m));
-        Assert.That(drinks.Single(d => d.Name == "Witte wijn").CurrentPrice, Is.EqualTo(.1m));
+        Assert.That(drinks.Single(d => d.Name == "Cava").CurrentPrice, Is.EqualTo(16.5m));
+        Assert.That(drinks.Single(d => d.Name == "Duvel").CurrentPrice, Is.EqualTo(drinks.Single(d => d.Name == "Duvel").MinimumPrice));
+        Assert.That(drinks.Single(d => d.Name == "Witte wijn").CurrentPrice, Is.EqualTo(drinks.Single(d => d.Name == "Witte wijn").MinimumPrice));
     }
 
     [Test]
@@ -62,7 +62,7 @@ public class DrinkControllerTests
         _DrinkController.SetTotalAmountPurchased(_Cava);
         var drinks = _DrinkController.GetAllDrinks().ToList();
         var cava = drinks.Single(d => d.Name == "Cava");
-        Assert.That(cava.CurrentPrice, Is.EqualTo(4.6m));
+        Assert.That(cava.CurrentPrice, Is.EqualTo(4.7m));
     }
 
     [Test]
@@ -73,8 +73,8 @@ public class DrinkControllerTests
         _Cava.AmountPurchased = 1;
         _DrinkController.SetTotalAmountPurchased(_Cava);
         var drinks = _DrinkController.GetAllDrinks().ToList();
-        Assert.That(drinks.Single(d => d.Name == "Duvel").CurrentPrice, Is.EqualTo(3.45m));
-        Assert.That(drinks.Single(d => d.Name == "Witte wijn").CurrentPrice, Is.EqualTo(2.95m));
+        Assert.That(drinks.Single(d => d.Name == "Duvel").CurrentPrice, Is.EqualTo(3.4m));
+        Assert.That(drinks.Single(d => d.Name == "Witte wijn").CurrentPrice, Is.EqualTo(2.9m));
     }
 
     [Test]
@@ -89,9 +89,9 @@ public class DrinkControllerTests
         _Cava.AmountPurchased = 2;
         _DrinkController.SetTotalAmountPurchased(_Cava);
         var drinks = _DrinkController.GetAllDrinks().ToList();
-        Assert.That(drinks.Single(d => d.Name == "Cava").CurrentPrice, Is.EqualTo(4.65m));
+        Assert.That(drinks.Single(d => d.Name == "Cava").CurrentPrice, Is.EqualTo(4.8m));
         Assert.That(drinks.Single(d => d.Name == "Duvel").CurrentPrice, Is.EqualTo(3.5m));
-        Assert.That(drinks.Single(d => d.Name == "Witte wijn").CurrentPrice, Is.EqualTo(2.85m));
+        Assert.That(drinks.Single(d => d.Name == "Witte wijn").CurrentPrice, Is.EqualTo(2.7m));
     }
 
     [Test]

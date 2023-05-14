@@ -37,4 +37,12 @@ public class DrinkController : ControllerBase
         _DrinkService.CalculateNewPrices(drink);
         return new OkResult();
     }
+
+    [HttpPost]
+    [Route("ClearAll")]
+    public IActionResult ClearAll()
+    {
+        _DrinkRepository.DeleteAll();
+        return new OkResult();
+    }
 }
