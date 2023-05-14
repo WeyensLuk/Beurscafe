@@ -23,19 +23,20 @@ public class DrinkService : IDrinkService
             drink.ResetPrice();
         }
 
-        foreach (var drink in drinks)
+        for (var index = 0; index < drinks.Count; index++)
         {
+            var drink = drinks[index];
             drink.CurrentPrice += _ChangeAmount * drink.AmountPurchased;
-            CalculateNewPriceForAmountPurchased(drink, drinks);
+            CalculateNewPriceForAmountPurchased(drink, drinks, index);
         }
 
         _DrinkRepository.UpdateAll(drinks);
     }
 
-    private void CalculateNewPriceForAmountPurchased(Drink drink, IList<Drink> drinks)
+    private void CalculateNewPriceForAmountPurchased(Drink drink, IList<Drink> drinks, int index)
     {
         var i = 0;
-        var j = 0;
+        var j = index;
 
         while (i < drink.AmountPurchased)
         {
